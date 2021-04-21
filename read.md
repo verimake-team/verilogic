@@ -34,7 +34,8 @@ rtl：
 
     test_camera.v:The processed image resolution can be modified in the lcd_sync module（IMG_W、IMG_H）;
                   The threshold parameter can be modified in the threshold_binary module（Y_TH、Y_TL、CB_TH、CB_TL、CR_TH、CR_TL）;
-                  In the HVCOUNT module, some requirements for framing the target object can be modified（cnt_x0 、cnt_x1 、cnt_y0 、cnt_y1 、pixel）;
+                  In the HVCOUNT module, some requirements for framing the target object can be modified（cnt_x0 、cnt_x1 、
+                  cnt_y0 、cnt_y1 、pixel）;
                   And can be modified into its own camera, RAM, PLL and data transmitted to the master
                  
    
