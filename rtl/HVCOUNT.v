@@ -30,22 +30,22 @@ module  HVCOUNT#(
 
 
 
-reg [7:0]               hcnt         ;
-reg [7:0]               vcnt         ;
-reg [15:0]              cnt_delete   ;
-reg [5:0]               hcount_begin ;
-reg [5:0]               vcount_begin ;
-reg [5:0]               hcount_end   ;
-reg [5:0]               vcount_end   ;
+reg [10:0]              hcnt         ;
+reg [10:0]              vcnt         ;
+reg [23:0]              cnt_delete   ;
+reg [9:0]               hcount_begin ;
+reg [9:0]               vcount_begin ;
+reg [9:0]               hcount_end   ;
+reg [9:0]               vcount_end   ;
 reg                     delay_de_1   ;
 reg                     delay_hsync_1;
 reg                     delay_vsync_1;
 wire                    flag0        ;
 wire                    flag1        ;
-reg [7:0]               x0           ;
-reg [7:0]               y0           ;
-reg [7:0]               x1           ;
-reg [7:0]               y1           ;
+reg [10:0]              x0           ;
+reg [10:0]              y0           ;
+reg [10:0]              x1           ;
+reg [10:0]              y1           ;
 reg [23:0]              i_binary_r   ;
 reg                     flag_delete  ;
 reg signed [31:0]       mid_yr       ;
@@ -88,27 +88,27 @@ end
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n) begin 
-        hcnt<=8'd0;
+        hcnt<=11'd0;
     end 
     else if (hcnt==IMG_W-1'b1)begin 
-        hcnt<=8'd0;
+        hcnt<=11'd0;
     end 
     else if(i_de==1'b1)begin 
         hcnt<=hcnt+1'b1;
     end 
     else begin 
-        hcnt<=8'd0;
+        hcnt<=11'd0;
     end 
 end 
 
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n) begin 
-        vcnt<=8'd0;
+        vcnt<=11'd0;
     end 
     else if ( hcnt==IMG_W-1'b1) begin
         if(vcnt==IMG_H-1'b1 )begin 
-            vcnt<=8'd0;
+            vcnt<=11'd0;
         end 
         else begin 
             vcnt<=vcnt+1'b1;
@@ -125,7 +125,7 @@ end
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n)begin 
-        hcount_begin<=6'd0;
+        hcount_begin<=10'd0;
     end 
     else if (i_de==1'b1)begin
         if(hcount_begin==cnt_x0)begin 
@@ -135,18 +135,18 @@ always@(posedge clk or negedge rst_n)begin
             hcount_begin<=hcount_begin+1'b1;
         end 
         else begin 
-            hcount_begin<=6'd0;
+            hcount_begin<=10'd0;
         end 
     end
     else begin 
-        hcount_begin<=6'd0;
+        hcount_begin<=10'd0;
     end 
 end
 
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n)begin 
-        vcount_begin<=6'd0;
+        vcount_begin<=10'd0;
     end 
     else if(vcnt!=IMG_H-1'b1 )begin
         if (vcount_begin==cnt_y0)begin 
@@ -157,19 +157,19 @@ always@(posedge clk or negedge rst_n)begin
                 vcount_begin<=vcount_begin+1'b1;
             end 
             else begin 
-                vcount_begin<=6'd0;
+                vcount_begin<=10'd0;
             end 
         end
     end
     else begin 
-         vcount_begin<=6'd0;
+         vcount_begin<=10'd0;
     end 
 end
 
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n)begin 
-        hcount_end<=6'd0;
+        hcount_end<=10'd0;
     end 
     else if (hcount_begin==cnt_x0)begin
         if(hcount_end==cnt_x1)begin 
@@ -179,34 +179,34 @@ always@(posedge clk or negedge rst_n)begin
             hcount_end<=hcount_end+1'b1;
         end 
         else begin 
-            hcount_end<=6'd0;
+            hcount_end<=10'd0;
         end 
     end
     else begin 
-        hcount_end<=6'd0;
+        hcount_end<=10'd0;
     end 
 end
 
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n)begin 
-        vcount_end<=6'd0;
+        vcount_end<=10'd0;
     end 
     else if (vcount_begin==cnt_y0  )begin
         if(vcount_end==cnt_y1)begin
             vcount_end<=cnt_y1;
         end 
         else if (hcnt==IMG_W-1'b1)begin
-             if (hcount_begin==6'd0)begin 
+             if (hcount_begin==10'd0)begin 
                 vcount_end<=vcount_end+1'b1;
              end 
             else begin 
-                vcount_end<=6'd0;
+                vcount_end<=10'd0;
             end 
         end
     end
     else begin 
-        vcount_end<=6'd0;
+        vcount_end<=10'd0;
     end 
 end
 
@@ -220,10 +220,10 @@ end
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n)begin 
-        cnt_delete<=16'd0;
+        cnt_delete<=24'd0;
     end 
     else if (vcnt==IMG_H-1'b1 && hcnt==IMG_W-1'b1 )begin
-        cnt_delete<=16'd0;
+        cnt_delete<=24'd0;
     end 
     else if(i_binary==24'h000000)begin 
         cnt_delete<=cnt_delete+1'b1;
@@ -253,9 +253,9 @@ end
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n)begin
-        x0<=8'd0;
-        y0<=8'd0;
-        x1<=8'd0;
+        x0<=11'd0;
+        y0<=11'd0;
+        x1<=11'd0;
     end 
     else if (vcount_begin==cnt_y0-1'b1)begin
         if(hcount_begin==cnt_x0-1'b1)begin
@@ -267,9 +267,9 @@ always@(posedge clk or negedge rst_n)begin
         end
     end
     else if (flag_delete==1'b1)begin
-        x0<=8'd0;
-        y0<=8'd0;
-        x1<=8'd0;
+        x0<=11'd0;
+        y0<=11'd0;
+        x1<=11'd0;
     end
 end
 
@@ -277,13 +277,13 @@ end
 
 always@(posedge clk or negedge rst_n)begin
     if(!rst_n)begin
-        y1<=8'd0;
+        y1<=11'd0;
     end 
     else if(vcount_end==cnt_y1-1'b1  )begin
         y1<=vcnt-cnt_y1+1'b1;
     end
     else if(flag_delete==1'b1)begin 
-        y1<=8'd0;
+        y1<=11'd0;
     end 
 end
 
